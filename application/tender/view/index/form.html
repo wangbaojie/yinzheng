@@ -1,0 +1,134 @@
+{extend name='admin@public/content'}
+{block name="button"}
+
+<!--{if auth("$classuri/add")}-->
+<button data-open='{:url("$classuri/index")}' data-title="返回" class='layui-btn layui-btn-sm layui-btn-primary'>返回
+</button>
+<!--{/if}-->
+{/block}
+
+{block name="content"}
+<form autocomplete="off" onsubmit="return false;" action="{:request()->url()}" data-auto="true" method="post"
+      id="ProductForm" class='form-horizontal layui-form padding-top-20'>
+
+
+    <div class="form-group">
+        <label class="col-sm-2 control-label">项目名称</label>
+        <div class='col-sm-8'>
+            <input name="project_name" required value="{$vo.project_name|default=''}" class="layui-input"
+                   title="请输入项目名称"
+                   placeholder="请输入项目名称">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">受益人</label>
+        <div class='col-sm-8'>
+            <input name="Beneficiary" required value="{$vo.Beneficiary|default=''}" class="layui-input" title="请输入受益人"
+                   placeholder="请输入受益人">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">开标时间</label>
+        <div class='col-sm-8'>
+            <input required name="open_time" id="open_time" value="{$vo.open_time|default=''}" placeholder="请选择开标时间"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">担保金额(小写)</label>
+        <div class='col-sm-8'>
+            <input name="guarantee_num" required  type="number" value="{$vo.guarantee_num|default=''}" class="layui-input"
+                   title="请输入担保金额(小写)"
+                   placeholder="请输入担保金额(小写)">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">担保金额(大写)</label>
+        <div class='col-sm-8'>
+            <input name="guarantee_char" required value="{$vo.guarantee_char|default=''}" class="layui-input"
+                   title="请输入担保金额(大写)"
+                   placeholder="请输入担保金额(大写)">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">公司名称</label>
+        <div class='col-sm-8'>
+            <input name="company_name" required value="{$vo.company_name|default=''}" class="layui-input"
+                   title="请输入公司名称"
+                   placeholder="请输入公司名称">
+
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">保函期限(天)</label>
+        <div class='col-sm-8'>
+            <input type="number" name="guarantee_term" required  value="{$vo.guarantee_term|default=''}" class="layui-input"
+                   title="请输入保函期限/天"
+                   placeholder="请输入保函期限/天">
+            <p class="help-block">保函有限期为开标后的有效天数,请填写天数(不带单位)。</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label label-required">详细内容</label>
+        <div class='col-sm-8'>
+            <textarea name="content">{$vo.content|default=''|htmlspecialchars_decode}</textarea>
+        </div>
+    </div>
+
+    <div class="hr-line-dashed"></div>
+
+    <div class="col-sm-7 col-sm-offset-2">
+        <div class="layui-form-item text-center">
+            {if !empty($vo.id)}<input type="hidden" name="id" value="{$vo.id}">{/if}
+            <button class="layui-btn" type="submit">保存配置</button>
+            <button class="layui-btn layui-btn-danger" type='button' onclick="window.history.back()">取消编辑</button>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    require(['jquery', 'ckeditor'], function () {
+        window.form.render();
+        window.createEditor('[name="content"]', {height: 500});
+        window.laydate.render({type: 'datetime', elem: '#open_time'});
+
+
+    });
+</script>
+{/block}
+
+{block name="style"}
+<style>
+
+    .background-item {
+        padding: 15px;
+        background: #efefef;
+    }
+
+    .background-item thead tr {
+        background: #e0e0e0
+    }
+
+    .price-input-td {
+        padding: 0 !important;
+    }
+
+    .price-input-td:before {
+        margin: 4px;
+        width: 35px;
+        height: 22px;
+        content: "金额";
+        line-height: 20px;
+        text-align: center;
+        position: absolute;
+        background: #e2e2e2;
+    }
+
+    .price-input-td input {
+        height: 30px;
+        padding-left: 50px;
+        border: none !important;
+    }
+</style>
+{/block}

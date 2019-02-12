@@ -1,0 +1,134 @@
+{extend name='admin@public/content'}
+
+{block name="button"}
+
+<!--{if auth("$classuri/add")}-->
+<button data-open='{:url("$classuri/add")}' data-title="添加商品" class='layui-btn layui-btn-sm layui-btn-primary'>添加担保
+</button>
+<!--{/if}-->
+
+
+<!--{if auth("$classuri/del")}-->
+<button data-update data-field='delete' data-action='{:url("$classuri/del")}'
+        class='layui-btn layui-btn-sm layui-btn-primary'>批量删除
+</button>
+<!--{/if}-->
+
+{/block}
+
+{block name="content"}
+
+<!-- 表单搜索 开始 -->
+<form autocomplete="off" class="layui-form layui-form-pane form-search" action="{:request()->url()}"
+      onsubmit="return false" method="get">
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">查询编号</label>
+        <div class="layui-input-inline">
+            <input name="no" value="{$Think.get.no}" placeholder="请输入查询编号" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">项目名称</label>
+        <div class="layui-input-inline">
+            <input name="project_name" value="{$Think.get.project_name}" placeholder="请输入项目名称" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-inline">
+        <label class="layui-form-label">开标时间</label>
+        <div class="layui-input-inline">
+            <input name="open_time" id="open_time" value="{$Think.get.open_time}" placeholder="请选择发布时间"
+                   class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-inline">
+        <button class="layui-btn layui-btn-primary"><i class="layui-icon">&#xe615;</i> 搜 索</button>
+    </div>
+
+</form>
+<!-- 表单搜索 结束 -->
+
+<form onsubmit="return false;" data-auto="true" method="post">
+    <!--{if empty($list)}-->
+    <p class="help-block text-center well">没 有 记 录 哦！</p>
+    <!--{else}-->
+    <input type="hidden" value="resort" name="action">
+    <table class="layui-table notevent" lay-skin="line">
+        <thead>
+        <tr>
+            <th class='list-table-check-td think-checkbox'>
+                <input data-auto-none="none" data-check-target='.list-check-box' type='checkbox'>
+            </th>
+            <th class="nowrap">查询编号</th>
+            <th class="nowrap">项目名称</th>
+            <th class="nowrap">受益人</th>
+            <th class="nowrap">开标时间</th>
+            <th class="nowrap">担保金额</th>
+            <th class="nowrap">公司名称</th>
+            <th class="nowrap">保函期限 / 状态</th>
+            <th class="text-left">添加时间</th>
+            <th class='text-center'></th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach $list as $key=>$vo}
+        <tr>
+            <td class='list-table-check-td text-top think-checkbox'>
+                <input class="list-check-box" value='{$vo.id}' type='checkbox'>
+            </td>
+            <td class="text-left nowrap text-top">
+                {$vo.no}
+            </td>
+            <td class="text-left nowrap text-top">
+                {$vo.project_name|msubstr=###,0,20,'utf-8'}
+            </td>
+            <td class="text-left nowrap text-top">
+                {$vo.Beneficiary}
+            </td>
+            <td class="text-left nowrap text-top">
+                {$vo.open_time|date="Y-m-d H:i:s"|raw}
+            </td>
+            <td class="text-left nowrap text-top">
+                {$vo.guarantee_num}
+            </td>
+            <td class="text-left nowrap text-top">
+                {$vo.company_name}
+            </td>
+            <td class="text-left nowrap text-top">
+                {$vo.guarantee_term*86400+$vo.open_time|date="Y-m-d H:i:s"|raw}
+                {if $vo.guarantee_term*86400+$vo.open_time lt time()}<span class="color-red margin-left-10">已过期</span>{else /}<span
+                    class="color-green margin-left-10">正常</span>{/if}
+            </td>
+            <td class='text-left nowrap text-top'>
+                {$vo.created_at|date="Y-m-d H:i:s"|raw}
+
+            </td>
+
+            <td class='text-center nowrap text-top'>
+
+                <!--{if auth("$classuri/edit")}-->
+                <span class="text-explode">|</span>
+                <a  data-open='{:url("$classuri/edit")}?id={$vo.id}'>编辑</a>
+                <!--{/if}-->
+                <!--{if auth("$classuri/del")}-->
+                <span class="text-explode">|</span>
+                <a data-update="{$vo.id}" data-field='delete' data-action='{:url("$classuri/del")}'>删除</a>
+                <!--{/if}-->
+
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    {if isset($page)}<p>{$page|raw}</p>{/if}
+    <!--{/if}-->
+</form>
+<script>
+    (function () {
+        window.form.render();
+        window.laydate.render({range: true, elem: '#open_time'});
+    })();
+</script>
+{/block}
