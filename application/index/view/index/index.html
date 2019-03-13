@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>陕西正银履约担保</title>
+    <link rel="stylesheet" href="/static/plugs/weui/weui.min.css">
+    <link rel="stylesheet" href="/static/plugs/weui/jquery-weui.min.css">
+</head>
+<body>
+
+<div>
+    <div class="page__bd">
+        <div class="weui-search-bar" id="searchBar">
+            <form class="weui-search-bar__form">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="在此输入查询编号查询"
+                           required/>
+                    <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+                </div>
+                <label class="weui-search-bar__label" id="searchText">
+                    <i class="weui-icon-search"></i>
+                    <span>在此输入查询编号进行查询</span>
+                </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn" id="select">查询</a>
+        </div>
+        <div class="weui-cells searchbar-result" id="showBox" hidden>
+            <div class="weui-form-preview">
+                <div class="weui-form-preview__hd">
+                    <label class="weui-form-preview__label">担保金额</label>
+                    <em class="weui-form-preview__value" id="jine"></em>
+                </div>
+                <div class="weui-form-preview__bd">
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">项目名称</label>
+                        <span class="weui-form-preview__value" id="P_name"></span>
+                    </div>
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">公司名称</label>
+                        <span class="weui-form-preview__value" id="C_name"></span>
+                    </div>
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">受益人</label>
+                        <span class="weui-form-preview__value" id="L_name"></span>
+                    </div>
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">担保金额大写</label>
+                        <span class="weui-form-preview__value" id="daxie"></span>
+                    </div>
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">开标时间</label>
+                        <span class="weui-form-preview__value" id="K_time"></span>
+                    </div>
+                    <div class="weui-form-preview__item">
+                        <label class="weui-form-preview__label">保函有效期截止</label>
+                        <span class="weui-form-preview__value" id="J_time"></span>
+                    </div>
+
+                </div>
+                <div class="weui-form-preview__ft">
+                    <div class="weui-form-preview__item">
+                        <span class="weui-form-preview__value" id="content">
+                       </span>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<script src="/static/plugs/weui/jquery.min.js"></script>
+<script src="/static/plugs/weui/jquery.weui.min.js"></script>
+
+<script type="text/javascript">
+
+    $(function () {
+        var $searchBar = $('#searchBar'),
+            $searchResult = $('#searchResult'),
+            $searchText = $('#searchText'),
+            $searchInput = $('#searchInput'),
+            $select = $('#select'),
+            $searchClear = $('#searchClear'),
+            $searchCancel = $('#searchCancel');
+
+        function hideSearchResult() {
+            $searchResult.hide();
+            $searchInput.val('');
+        }
+
+        function cancelSearch() {
+
+            hideSearchResult();
+            $searchBar.removeClass('weui-search-bar_focusing');
+            $searchText.show();
+        }
+
+        $searchText.on('click', function () {
+            $searchBar.addClass('weui-search-bar_focusing');
+            $searchInput.focus();
+        });
+        $searchInput
+            .on('blur', function () {
+                if (!this.value.length) cancelSearch();
+            })
+            .on('input', function () {
+
+                if (this.value.length) {
+                    $searchResult.show();
+
+                } else {
+                    $searchResult.hide();
+                }
+            })
+        ;
+        $searchClear.on('click', function () {
+            hideSearchResult();
+            $searchInput.focus();
+        });
+        $searchCancel.on('click', function () {
+            cancelSearch();
+            $searchInput.blur();
+        });
+        $select.on('click', function (e) {
+            var no = $searchInput.val();
+            no = $.trim(no);
+            if (no.length != 16) {
+                $.toast("输入错误", "cancel");
+                return false;
+            }
+            var url = 'http://yz.lsalsz.cn/api/v1/tender/' + no;
+            $.showLoading("正在查询...");
+            var data = {};
+            $.post(url, {}, function (res) {
+                if (res.code == 0) {
+                    $.hideLoading();
+                    $.toast(res.msg, "cancel");
+                    return false;
+                }
+                if (res.code == 1) {
+                    $.hideLoading();
+
+                    $.each(res.data, function (index, e) {
+                        if (index == "担保金额(小写)") data.jexx = e;
+                        if (index == "项目名称") data.xmmc = e;
+                        if (index == "公司名称") data.gsmc = e;
+                        if (index == "受益人") data.syr = e;
+                        if (index == "担保金额(大写)") data.jedx = e;
+                        if (index == "开标时间") data.kbsj = e;
+                        if (index == "保函有效期截止") data.bhjz = e;
+                        if (index == "详情") data.xq = e;
+                    });
+                    console.log(data)
+                    $('#jine').html(data.jexx);
+                    $('#P_name').html(data.xmmc);
+                    $('#C_name').html(data.gsmc);
+                    $('#L_name').html(data.syr);
+                    $('#daxie').html(data.jedx);
+                    $('#K_time').html(data.kbsj);
+                    $('#J_time').html(data.bhjz);
+                    $('#content').html(data.xq);
+                    $("#showBox").show();
+                }
+            })
+        })
+    });
+</script>
+
+
+</body>
+</html>
