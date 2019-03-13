@@ -20,11 +20,11 @@ return [
     // 服务器地址
     'hostname' => '127.0.0.1',
     // 数据库名
-    'database' => 'xiyunpeng',
+    'database' => 'yz_lsalsz_cn',
     // 用户名
-    'username' => 'root',
+    'username' => 'yz_lsalsz_cn',
     // 密码
-    'password' => 'root',
+    'password' => 'J26XEtTrFASSZN6i',
     // 端口
     'hostport' => '3306',
 ];

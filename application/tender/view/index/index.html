@@ -89,6 +89,8 @@
             </td>
             <td class="text-left nowrap text-top">
                 {$vo.open_time|date="Y-m-d H:i:s"|raw}
+                {if $vo.open_time lt time()}<span class="color-red margin-left-10">已开标</span>{else /}<span
+                    class="color-green margin-left-10">未开标</span>{/if}
             </td>
             <td class="text-left nowrap text-top">
                 {$vo.guarantee_num}
